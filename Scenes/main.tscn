@@ -1,0 +1,115 @@
+[gd_scene format=3 uid="uid://dbqjj2o02xy8h"]
+
+[ext_resource type="PackedScene" uid="uid://qwkuu6byr76m" path="res://Scenes/Car.tscn" id="1_0xm2m"]
+[ext_resource type="Script" uid="uid://b61pwoplnh3ss" path="res://Scripts/camera_3d.gd" id="2_h2yge"]
+[ext_resource type="PackedScene" uid="uid://c8yn6ylsp1p5m" path="res://Scenes/finish_point.tscn" id="3_h2yge"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0xm2m"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_h2yge"]
+sky_material = SubResource("ProceduralSkyMaterial_0xm2m")
+
+[sub_resource type="Environment" id="Environment_1bvp3"]
+background_mode = 2
+sky = SubResource("Sky_h2yge")
+tonemap_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8gbba"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_1bvp3"]
+material = SubResource("StandardMaterial3D_8gbba")
+size = Vector3(500, 1, 500)
+
+[sub_resource type="BoxMesh" id="BoxMesh_8gbba"]
+size = Vector3(1, 3, 1)
+
+[node name="Main" type="Node3D" unique_id=1209199206]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1714773008]
+visible = false
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer" unique_id=1897295052]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -46.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 132.0
+grow_horizontal = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/PanelContainer" unique_id=1472120282]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/PanelContainer/MarginContainer" unique_id=110134441]
+layout_mode = 2
+
+[node name="Speed" type="Label" parent="CanvasLayer/PanelContainer/MarginContainer/VBoxContainer" unique_id=27839885]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 20
+text = "Speed:"
+vertical_alignment = 1
+
+[node name="Look_dir" type="Label" parent="CanvasLayer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1023323992]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 20
+text = "Axis:"
+vertical_alignment = 1
+
+[node name="Direction" type="Label" parent="CanvasLayer/PanelContainer/MarginContainer/VBoxContainer" unique_id=755024796]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 20
+text = "Direction:"
+vertical_alignment = 1
+
+[node name="DriveMode" type="Label" parent="CanvasLayer/PanelContainer/MarginContainer/VBoxContainer" unique_id=2026079319]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 20
+text = "Direction:"
+vertical_alignment = 1
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=52454920]
+environment = SubResource("Environment_1bvp3")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1164161194]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="." unique_id=1205487915]
+use_collision = true
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="CSGCombiner3D" unique_id=1653312455]
+mesh = SubResource("BoxMesh_1bvp3")
+
+[node name="CSGMesh3D2" type="CSGMesh3D" parent="CSGCombiner3D" unique_id=1506751514]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.4087124, 0, 0)
+mesh = SubResource("BoxMesh_8gbba")
+
+[node name="Player" parent="." unique_id=99985396 node_paths=PackedStringArray("Canvas_layer", "speed_text", "look_dir_text", "direction_text", "drive_mode", "target") instance=ExtResource("1_0xm2m")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 2, 0)
+Canvas_layer = NodePath("../CanvasLayer")
+speed_text = NodePath("../CanvasLayer/PanelContainer/MarginContainer/VBoxContainer/Speed")
+look_dir_text = NodePath("../CanvasLayer/PanelContainer/MarginContainer/VBoxContainer/Look_dir")
+direction_text = NodePath("../CanvasLayer/PanelContainer/MarginContainer/VBoxContainer/Direction")
+drive_mode = NodePath("../CanvasLayer/PanelContainer/MarginContainer/VBoxContainer/DriveMode")
+target = NodePath("../Finish_Point")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=2054068837 node_paths=PackedStringArray("target")]
+transform = Transform3D(-1, 0, -8.742277e-08, -1.42272265e-08, 0.9866689, 0.1627405, 8.625733e-08, 0.1627405, -0.9866689, 14.5, 3.8218613, 0)
+script = ExtResource("2_h2yge")
+target = NodePath("../Player")
+follow_speed = 7.5
+distance = -7.0
+
+[node name="Finish_Point" parent="." unique_id=1818215819 instance=ExtResource("3_h2yge")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 3, 50)

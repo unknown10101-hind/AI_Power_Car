@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://c8yn6ylsp1p5m"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7xco3"]
+albedo_color = Color(0.4627451, 0, 0, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_x0t78"]
+material = SubResource("StandardMaterial3D_7xco3")
+top_radius = 0.1
+bottom_radius = 0.1
+height = 5.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vl6ig"]
+albedo_color = Color(0, 1, 0, 1)
+
+[sub_resource type="PrismMesh" id="PrismMesh_k24ex"]
+material = SubResource("StandardMaterial3D_vl6ig")
+size = Vector3(1, 1, 0.1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ncwc2"]
+size = Vector3(0.5, 5, 0.5)
+
+[node name="Finish_Point" type="StaticBody3D" unique_id=1818215819]
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="." unique_id=1928074672]
+use_collision = true
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="CSGCombiner3D" unique_id=488622850]
+mesh = SubResource("CylinderMesh_x0t78")
+
+[node name="CSGMesh3D2" type="CSGMesh3D" parent="CSGCombiner3D" unique_id=116490055]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 0.6, 1.85, 0)
+mesh = SubResource("PrismMesh_k24ex")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1782999607]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.039794922, 0)
+shape = SubResource("BoxShape3D_ncwc2")
