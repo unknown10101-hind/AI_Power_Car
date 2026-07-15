@@ -5,10 +5,10 @@ extends VehicleBody3D
 @export var ground_sensor: RayCast3D
 
 @export_category("Movement")
-@export var motor_torque := 200.0
+@export var motor_torque := 100.0
 @export var max_speed := 40.0
 @export var reverse_max_speed := 20.0
-@export var brake_force := 100.0
+@export var brake_force := 200.0
 
 @export_category("Steering")
 @export var max_turn_angle := deg_to_rad(30.0)
@@ -24,6 +24,10 @@ extends VehicleBody3D
 @export_category("Target")
 @export var target: StaticBody3D
 
+@export_category("Obsticle")
+@export var obsticle: Node3D
+@export var obsticle_detect:= false
+
 var speed := 0.0
 
 var move_input := 0.0
@@ -34,7 +38,7 @@ var move_dir := "Stop"
 var turn_dir := "Straight"
 
 var auto_drive := false
-
+var turn := 0.0
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("tab"):
@@ -50,7 +54,8 @@ func _physics_process(delta: float) -> void:
 	vehicle_turn(delta)
 	update_speed()
 	update_ui()
-	apply_brake()
+	apply_brake(delta)
+	
 	if ground_sensor == null or !ground_sensor.is_colliding():
 		engine_force = 0.0
 		return
@@ -59,7 +64,15 @@ func _physics_process(delta: float) -> void:
 		auto_drive_mode(delta)
 	else:
 		manual_drive_mode(delta)
-
+	
+	if obsticle != null:
+		var direction := obsticle.global_position - global_position
+		var look_dir := global_transform.basis.inverse() * direction.normalized()
+		
+		if look_dir.z < 0.0:
+			obsticle = null
+			obsticle_detect = false
+			print("remove")
 
 func update_speed() -> void:
 	speed = linear_velocity.length() * 3.6
@@ -90,33 +103,34 @@ func auto_drive_mode(delta: float) -> void:
 
 	if look_dir_text:
 		look_dir_text.text = "X: %.2f, Z: %.2f" % [look_dir.x, look_dir.z]
+	if !obsticle_detect:
+		max_speed = 40
+		if look_dir.z > 0.0:
 
-	if look_dir.z > 0.0:
+			move_dir = "Forward"
 
-		move_dir = "Forward"
+			if look_dir.x > 0.1:
+				turn_input = 1.0
+				turn_dir = "Left"
 
-		if look_dir.x > 0.1:
-			turn_input = 1.0
-			turn_dir = "Left"
+			elif look_dir.x < -0.1:
+				turn_input = -1.0
+				turn_dir = "Right"
 
-		elif look_dir.x < -0.1:
-			turn_input = -1.0
-			turn_dir = "Right"
+			else:
+				turn_input = 0.0
+				turn_dir = "Straight"
 
 		else:
-			turn_input = 0.0
-			turn_dir = "Straight"
 
-	else:
+			move_dir = "Forward"
 
-		move_dir = "Forward"
-
-		if look_dir.x > 0:
-			turn_input = 1.0
-			turn_dir = "Left"
-		else:
-			turn_input = -1.0
-			turn_dir = "Right"
+			if look_dir.x > 0:
+				turn_input = 1.0
+				turn_dir = "Left"
+			else:
+				turn_input = -1.0
+				turn_dir = "Right"
 	_detect()
 
 
@@ -125,6 +139,7 @@ func manual_drive_mode(delta: float) -> void:
 
 	move_input = Input.get_axis("move_backward", "move_forward")
 	turn_input = Input.get_axis("turn_right", "turn_left")
+	brake_input = 1.0 if Input.is_action_pressed("brake") else 0.0
 
 	var target_steering = max_turn_angle * turn_input
 
@@ -153,7 +168,7 @@ func vehicle_movement() -> void:
 
 	if move_input > 0.0:
 		if speed < max_speed:
-			engine_force = motor_torque
+			engine_force = motor_torque 
 		else:
 			engine_force = 0.0 
 
@@ -166,7 +181,6 @@ func vehicle_movement() -> void:
 	else:
 		engine_force = 0.0
 
-
 func vehicle_turn(delta: float) -> void:
 
 	var target_steering := max_turn_angle * turn_input
@@ -178,9 +192,9 @@ func vehicle_turn(delta: float) -> void:
 	)
 
 
-func apply_brake() -> void:
+func apply_brake(delta: float) -> void:
 	if brake_input > 0.0:
-		brake = brake_force * brake_input
+		brake = brake_force * delta
 		engine_force = 0.0
 	else:
 		brake = 0.0
@@ -188,19 +202,53 @@ func apply_brake() -> void:
 
 func _detect() -> void:
 
-	var detected := []
-
+	var detected : Array[String]
+	var distance : float
+	
 	for ray in rays:
 		if ray and ray.is_colliding():
+			var object := ray.get_collider()
+			if object.name == "Finish_Point":
+				brake_input = 1.0
+				break
+			obsticle_detect = true
+			if obsticle == null:
+				obsticle = object
+				print("Obsticle find")
 			detected.append(ray.name)
+			distance = ray.global_position.distance_to(ray.get_collision_point())
+			
+	if obsticle_detect == true:		
+		handle_turn(detected,distance)
+		max_speed = 20
 	
-	brake_input = 1.0
+func handle_turn(detect: Array[String], distance : int) -> void:
 	
-	if "Middle" in detected:
-		print("Middle")
-	elif "Left" in detected or "Middle_Left" in detected:
-		print("Left")
-	elif "Right" in detected or "Middle_Right" in detected:
-		print("Right")
-
-		
+	var dir : String
+	
+	if "Middle" in detect:
+		dir = "Middle"
+			
+		if turn_input == 0.0:
+			#if "left" not in detect:
+				#turn_input = -1.0
+				#print("There is not left")
+			#elif "Right" not in detect:
+				#turn_input = 1.0
+				#print("There is not right")
+			#elif "Right" not in detect and "left" not in detect or "Right" in detect and "left" in detect:
+			turn_input = [-1.0,1.0].pick_random()
+			
+	elif "Left" in detect or "Middle_Left" in detect:
+		dir = "Left"
+		if turn_input == 0.0:
+			turn_input = -1.0
+	elif "Right" in detect or "Middle_Right" in detect:
+		dir = "Right"
+		if turn_input == 0.0:
+			turn_input = 1.0
+	
+	if dir or ("middle_"+dir) in detect:
+		pass
+	else:
+		turn_input = 0.0

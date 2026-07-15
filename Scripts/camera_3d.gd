@@ -4,9 +4,9 @@ extends Camera3D
 @export var target: Node3D
 
 @export_group("Follow")
-@export var follow_speed := 5.0
+@export var follow_speed := 7.5
 @export var height := 4.0
-@export var distance := 7.0
+@export var distance := -7.0
 
 @export_group("Look")
 @export var look_height := 1.0
@@ -16,7 +16,12 @@ extends Camera3D
 func _physics_process(delta: float) -> void:
 	if target == null:
 		return
-
+	
+	if target.move_dir == "Backward" and target.speed > 5:
+		distance = 7.0
+	else:
+		distance = -7.0
+		
 	var target_position := (
 		target.global_position
 		+ target.global_transform.basis.z * distance

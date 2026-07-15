@@ -247,6 +247,7 @@ center_of_mass = Vector3(0, -0.5, 0)
 script = ExtResource("1_8tfcp")
 rays = [NodePath("Sensors/Front_Sensors/Left"), NodePath("Sensors/Front_Sensors/Middle_Left"), NodePath("Sensors/Front_Sensors/Middle"), NodePath("Sensors/Front_Sensors/Middle_Right"), NodePath("Sensors/Front_Sensors/Right")]
 ground_sensor = NodePath("Sensors/Ground_Sensors/Ground_Detect")
+turn_speed = 2.5
 
 [node name="Pickup" type="MeshInstance3D" parent="." unique_id=817532808]
 transform = Transform3D(100, 0, 0, 0, -4.3711384e-06, 99.99999, 0, -99.99999, -4.3711384e-06, 0, 0, 0)
