@@ -5,9 +5,10 @@ extends VehicleBody3D
 @export var ground_sensor: RayCast3D
 
 @export_category("Movement")
-@export var motor_torque := 100.0
+@export var motor_torque := 200.0
 @export var max_speed := 40.0
 @export var reverse_max_speed := 20.0
+@export var brake_force := 100.0
 
 @export_category("Steering")
 @export var max_turn_angle := deg_to_rad(30.0)
@@ -27,6 +28,7 @@ var speed := 0.0
 
 var move_input := 0.0
 var turn_input := 0.0
+var brake_input := 0.0
 
 var move_dir := "Stop"
 var turn_dir := "Straight"
@@ -48,7 +50,7 @@ func _physics_process(delta: float) -> void:
 	vehicle_turn(delta)
 	update_speed()
 	update_ui()
-
+	apply_brake()
 	if ground_sensor == null or !ground_sensor.is_colliding():
 		engine_force = 0.0
 		return
@@ -153,7 +155,7 @@ func vehicle_movement() -> void:
 		if speed < max_speed:
 			engine_force = motor_torque
 		else:
-			engine_force = 0.0
+			engine_force = 0.0 
 
 	elif move_input < 0.0:
 		if speed > -reverse_max_speed:
@@ -176,6 +178,12 @@ func vehicle_turn(delta: float) -> void:
 	)
 
 
+func apply_brake() -> void:
+	if brake_input > 0.0:
+		brake = brake_force * brake_input
+		engine_force = 0.0
+	else:
+		brake = 0.0
 
 
 func _detect() -> void:
@@ -185,7 +193,9 @@ func _detect() -> void:
 	for ray in rays:
 		if ray and ray.is_colliding():
 			detected.append(ray.name)
-
+	
+	brake_input = 1.0
+	
 	if "Middle" in detected:
 		print("Middle")
 	elif "Left" in detected or "Middle_Left" in detected:
@@ -193,6 +203,4 @@ func _detect() -> void:
 	elif "Right" in detected or "Middle_Right" in detected:
 		print("Right")
 
-
-func _on_area_3d_body_entered(body: Node3D) -> void:
-	print("obsticle")
+		

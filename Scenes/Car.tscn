@@ -241,10 +241,6 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_nba3g")
 
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_8tfcp"]
-height = 1.5
-radius = 10.0
-
 [node name="Player" type="VehicleBody3D" unique_id=99985396 node_paths=PackedStringArray("rays", "ground_sensor")]
 center_of_mass_mode = 1
 center_of_mass = Vector3(0, -0.5, 0)
@@ -327,13 +323,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.45, 2)
 
 [node name="Left" type="RayCast3D" parent="Sensors/Front_Sensors" unique_id=941981078]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 0, 0)
-target_position = Vector3(1, 0, 10)
+target_position = Vector3(0, 0, 10)
 debug_shape_custom_color = Color(0, 1, 0, 1)
 debug_shape_thickness = 5
 
 [node name="Middle_Left" type="RayCast3D" parent="Sensors/Front_Sensors" unique_id=444762487]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 0, 0)
-target_position = Vector3(0.5, 0, 10)
+target_position = Vector3(0, 0, 10)
 debug_shape_custom_color = Color(0, 1, 0, 1)
 debug_shape_thickness = 5
 
@@ -344,13 +340,13 @@ debug_shape_thickness = 5
 
 [node name="Middle_Right" type="RayCast3D" parent="Sensors/Front_Sensors" unique_id=1877208150]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0, 0)
-target_position = Vector3(-0.5, 0, 10)
+target_position = Vector3(0, 0, 10)
 debug_shape_custom_color = Color(0, 1, 0, 1)
 debug_shape_thickness = 5
 
 [node name="Right" type="RayCast3D" parent="Sensors/Front_Sensors" unique_id=1288895218]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 0, 0)
-target_position = Vector3(-1, 0, 10)
+target_position = Vector3(0, 0, 10)
 debug_shape_custom_color = Color(0, 1, 0, 1)
 debug_shape_thickness = 5
 
@@ -360,19 +356,44 @@ debug_shape_thickness = 5
 target_position = Vector3(0, -1.5, 0)
 
 [node name="Side_Sensor" type="Node3D" parent="Sensors" unique_id=1663963652]
-
-[node name="Ground_Detect" type="RayCast3D" parent="Sensors/Side_Sensor" unique_id=797371073]
-target_position = Vector3(1, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.35, -0.35)
 
 [node name="Left_Side" type="Node3D" parent="Sensors/Side_Sensor" unique_id=1258779363]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+
+[node name="Ground_Detect" type="RayCast3D" parent="Sensors/Side_Sensor/Left_Side" unique_id=797371073]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.5)
+target_position = Vector3(1, 0, 0)
+debug_shape_custom_color = Color(0, 0, 1, 1)
+debug_shape_thickness = 5
+
+[node name="Ground_Detect2" type="RayCast3D" parent="Sensors/Side_Sensor/Left_Side" unique_id=1022321195]
+target_position = Vector3(1, 0, 0)
+debug_shape_custom_color = Color(0, 0, 1, 1)
+debug_shape_thickness = 5
+
+[node name="Ground_Detect3" type="RayCast3D" parent="Sensors/Side_Sensor/Left_Side" unique_id=947531654]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.5)
+target_position = Vector3(1, 0, 0)
+debug_shape_custom_color = Color(0, 0, 1, 1)
+debug_shape_thickness = 5
 
 [node name="Right_Side" type="Node3D" parent="Sensors/Side_Sensor" unique_id=603372492]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
 
-[node name="3D_sensor" type="Node3D" parent="Sensors" unique_id=1466615103]
+[node name="Ground_Detect" type="RayCast3D" parent="Sensors/Side_Sensor/Right_Side" unique_id=297035952]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.5)
+target_position = Vector3(-1, 0, 0)
+debug_shape_custom_color = Color(0, 0, 1, 1)
+debug_shape_thickness = 5
 
-[node name="Area3D" type="Area3D" parent="Sensors/3D_sensor" unique_id=1027971536]
+[node name="Ground_Detect2" type="RayCast3D" parent="Sensors/Side_Sensor/Right_Side" unique_id=842005266]
+target_position = Vector3(-1, 0, 0)
+debug_shape_custom_color = Color(0, 0, 1, 1)
+debug_shape_thickness = 5
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Sensors/3D_sensor/Area3D" unique_id=1843986476]
-shape = SubResource("CylinderShape3D_8tfcp")
-
-[connection signal="body_entered" from="Sensors/3D_sensor/Area3D" to="." method="_on_area_3d_body_entered"]
+[node name="Ground_Detect3" type="RayCast3D" parent="Sensors/Side_Sensor/Right_Side" unique_id=167890637]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.5)
+target_position = Vector3(-1, 0, 0)
+debug_shape_custom_color = Color(0, 0, 1, 1)
+debug_shape_thickness = 5
