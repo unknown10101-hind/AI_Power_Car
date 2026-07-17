@@ -241,11 +241,12 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_nba3g")
 
-[node name="Player" type="VehicleBody3D" unique_id=99985396 node_paths=PackedStringArray("rays", "ground_sensor")]
+[node name="Player" type="VehicleBody3D" unique_id=99985396 node_paths=PackedStringArray("obsticle_check", "ground_check", "ground_sensor")]
 center_of_mass_mode = 1
 center_of_mass = Vector3(0, -0.5, 0)
 script = ExtResource("1_8tfcp")
-rays = [NodePath("Sensors/Front_Sensors/Left"), NodePath("Sensors/Front_Sensors/Middle_Left"), NodePath("Sensors/Front_Sensors/Middle"), NodePath("Sensors/Front_Sensors/Middle_Right"), NodePath("Sensors/Front_Sensors/Right")]
+obsticle_check = [NodePath("Sensors/Front_Sensors/Left"), NodePath("Sensors/Front_Sensors/Middle_Left"), NodePath("Sensors/Front_Sensors/Middle"), NodePath("Sensors/Front_Sensors/Middle_Right"), NodePath("Sensors/Front_Sensors/Right")]
+ground_check = [NodePath("Sensors/Road_Check/Left_check"), NodePath("Sensors/Road_Check/Right_check")]
 ground_sensor = NodePath("Sensors/Ground_Sensors/Ground_Detect")
 turn_speed = 2.5
 
@@ -362,18 +363,18 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.35, -0.35)
 [node name="Left_Side" type="Node3D" parent="Sensors/Side_Sensor" unique_id=1258779363]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
 
-[node name="Ground_Detect" type="RayCast3D" parent="Sensors/Side_Sensor/Left_Side" unique_id=797371073]
+[node name="Front_Left" type="RayCast3D" parent="Sensors/Side_Sensor/Left_Side" unique_id=797371073]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.5)
 target_position = Vector3(1, 0, 0)
 debug_shape_custom_color = Color(0, 0, 1, 1)
 debug_shape_thickness = 5
 
-[node name="Ground_Detect2" type="RayCast3D" parent="Sensors/Side_Sensor/Left_Side" unique_id=1022321195]
+[node name="Middle_Left" type="RayCast3D" parent="Sensors/Side_Sensor/Left_Side" unique_id=1022321195]
 target_position = Vector3(1, 0, 0)
 debug_shape_custom_color = Color(0, 0, 1, 1)
 debug_shape_thickness = 5
 
-[node name="Ground_Detect3" type="RayCast3D" parent="Sensors/Side_Sensor/Left_Side" unique_id=947531654]
+[node name="Rear_Left" type="RayCast3D" parent="Sensors/Side_Sensor/Left_Side" unique_id=947531654]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.5)
 target_position = Vector3(1, 0, 0)
 debug_shape_custom_color = Color(0, 0, 1, 1)
@@ -382,19 +383,34 @@ debug_shape_thickness = 5
 [node name="Right_Side" type="Node3D" parent="Sensors/Side_Sensor" unique_id=603372492]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
 
-[node name="Ground_Detect" type="RayCast3D" parent="Sensors/Side_Sensor/Right_Side" unique_id=297035952]
+[node name="Front_Right" type="RayCast3D" parent="Sensors/Side_Sensor/Right_Side" unique_id=297035952]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.5)
 target_position = Vector3(-1, 0, 0)
 debug_shape_custom_color = Color(0, 0, 1, 1)
 debug_shape_thickness = 5
 
-[node name="Ground_Detect2" type="RayCast3D" parent="Sensors/Side_Sensor/Right_Side" unique_id=842005266]
+[node name="Middle_Right" type="RayCast3D" parent="Sensors/Side_Sensor/Right_Side" unique_id=842005266]
 target_position = Vector3(-1, 0, 0)
 debug_shape_custom_color = Color(0, 0, 1, 1)
 debug_shape_thickness = 5
 
-[node name="Ground_Detect3" type="RayCast3D" parent="Sensors/Side_Sensor/Right_Side" unique_id=167890637]
+[node name="Rear_Right" type="RayCast3D" parent="Sensors/Side_Sensor/Right_Side" unique_id=167890637]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.5)
 target_position = Vector3(-1, 0, 0)
 debug_shape_custom_color = Color(0, 0, 1, 1)
+debug_shape_thickness = 5
+
+[node name="Road_Check" type="Node3D" parent="Sensors" unique_id=2049204840]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.45, 2)
+
+[node name="Left_check" type="RayCast3D" parent="Sensors/Road_Check" unique_id=582037297]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 0, 0)
+target_position = Vector3(0.5, -1, 0)
+debug_shape_custom_color = Color(1, 1, 0, 1)
+debug_shape_thickness = 5
+
+[node name="Right_check" type="RayCast3D" parent="Sensors/Road_Check" unique_id=45299201]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 0, 0)
+target_position = Vector3(-0.5, -1, 0)
+debug_shape_custom_color = Color(1, 1, 0, 1)
 debug_shape_thickness = 5
